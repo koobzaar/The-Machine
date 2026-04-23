@@ -1,0 +1,15 @@
+__pycache__/
+*.pyc
+*.pyo
+
+.venv/
+venv/
+
+build/
+*.ram
+
+*.gb
+*.gbc
+!langs/**/*.json
+
+.DS_Store
