@@ -6,8 +6,9 @@
 
 # The Machine — Language Patcher
 
-**A clean, redistributable ROM patching toolkit for The Machine (Game Boy Color).**  
-No ROM included. Bring your own.
+**A clean, redistributable ROM patching toolkit for _The Machine_ (Game Boy Color).**
+
+Verifies your ROM before touching it. Ships with a Brazilian Portuguese pack ready to use.
 
 <br>
 
@@ -17,40 +18,74 @@ No ROM included. Bring your own.
 ![Dependencies](https://img.shields.io/badge/Core%20deps-stdlib%20only-f0c040?style=flat-square)
 ![ROM](https://img.shields.io/badge/ROM-not%20included-c0392b?style=flat-square)
 
+<br>
+
+[Getting started](#getting-started) · [CLI reference](#cli-reference) · [Validation](#validating-a-language-pack) · [New packs](#creating-a-new-language-pack) · [QA tools](#optional-emulator-qa)
+
 </div>
+
+---
+
+<details>
+<summary><b>Table of contents</b></summary>
+
+- [Overview](#overview)
+- [Requirements](#requirements)
+- [Repository layout](#repository-layout)
+- [Getting started](#getting-started)
+- [CLI reference](#cli-reference)
+  - [Options](#options)
+- [Validating a language pack](#validating-a-language-pack)
+- [Creating a new language pack](#creating-a-new-language-pack)
+  - [Pack schema](#pack-schema)
+- [Optional emulator QA](#optional-emulator-qa)
+- [Brazilian Portuguese pack](#brazilian-portuguese-pack)
+- [Legal](#legal)
+
+</details>
 
 ---
 
 ## Overview
 
-This repository provides tooling to apply language patches to the original *The Machine* Game Boy Color ROM. It does **not** distribute the game.
+This repository provides tooling to apply language patches to the original *The Machine* Game Boy Color ROM. It ships **tooling and language-pack data only** — the game ROM is not included.
 
-What it ships:
+The core patcher verifies the source ROM by SHA-256, internal title, and file size before writing a single byte. If any check fails, the process is aborted with no output written.
 
-- A runtime-safe ROM patcher with SHA-256 identity verification
-- A language-pack validator
-- An optional PyBoy-based QA toolkit for maintainers
-- A ready-to-use **Brazilian Portuguese** language pack (`langs/ptbr/`)
+**What the toolkit provides:**
 
-The patcher verifies the source ROM by SHA-256, size, and internal title before writing a single byte.
+| Component | Description |
+|---|---|
+| `patch.py` | Interactive end-user patcher with automatic pack discovery |
+| `scripts/patch_rom.py` | Headless core patching engine |
+| `scripts/validate_language_pack.py` | Pack structure and ROM compatibility validator |
+| `scripts/language_pack.py` | Pack discovery and resolution helpers |
+| `scripts/rom_text_codec.py` | Font patching and runtime token-expansion logic |
+| `scripts/pyboy_smoke_test.py` | Optional PyBoy boot and input automation |
+| `scripts/qa_textboxes.py` | Optional dialogue-box boundary QA |
+| `langs/ptbr/pack.json` | Finalised Brazilian Portuguese language pack |
 
 ---
 
 ## Requirements
 
-**Core patcher** — Python standard library only, no extra packages needed:
+The core patcher uses **only the Python standard library** — no extra packages needed to patch.
 
 ```
 Python 3.11 or newer
 The original The Machine GBC ROM (legally obtained)
 ```
 
-**Optional QA tools:**
+Optional QA tools require two additional packages:
 
 ```bash
 python3 -m venv .venv
 .venv/bin/pip install -r requirements-qa.txt
+# installs: pyboy, pillow
 ```
+
+> [!NOTE]
+> The QA tools are intended for pack maintainers. End users patching a ROM do not need them.
 
 ---
 
@@ -62,7 +97,7 @@ langs/
   ptbr/
     pack.json                     Brazilian Portuguese language pack
 scripts/
-  language_pack.py                Pack discovery and validation helpers
+  language_pack.py                Pack discovery and resolution helpers
   patch_rom.py                    Core ROM patching engine
   validate_language_pack.py       Language-pack validator
   rom_text_codec.py               Font patching and runtime token-expansion logic
@@ -72,31 +107,36 @@ scripts/
 
 ---
 
-## Quick Start
+## Getting Started
 
-1. Place your original `.gbc` ROM anywhere on disk.
-2. Run the patcher:
+**1.** Place your original `.gbc` ROM anywhere on disk.
+
+**2.** Run the interactive patcher:
 
 ```bash
 python3 patch.py
 ```
 
-3. Select a language pack from the interactive list.
-4. Enter the path to the original ROM and a destination path.
+**3.** Select a language pack from the list. Pack discovery is automatic — any folder under `langs/` containing a valid `pack.json` will appear.
 
-If the ROM hash matches and the pack validates, a patched `.gbc` file is written.
+**4.** Enter the path to your original ROM. The default output name is `the_machine_<code>.gbc` in the current directory.
+
+The patcher validates the pack and verifies the ROM before writing. If either check fails, it reports all issues and exits without producing output.
+
+> [!IMPORTANT]
+> The patcher only accepts the exact ROM revision identified by the SHA-256 in the pack. Headered, trimmed, or otherwise modified ROMs will be rejected.
 
 ---
 
 ## CLI Reference
 
-**List available language packs:**
+List available language packs without patching:
 
 ```bash
 python3 patch.py --list-langs
 ```
 
-**Patch directly (non-interactive):**
+Patch non-interactively:
 
 ```bash
 python3 patch.py \
@@ -106,7 +146,7 @@ python3 patch.py \
   --overwrite
 ```
 
-**Call the core patcher directly:**
+Call the core engine directly (bypasses interactive prompts):
 
 ```bash
 python3 scripts/patch_rom.py \
@@ -116,11 +156,22 @@ python3 scripts/patch_rom.py \
   --overwrite
 ```
 
+### Options
+
+| Flag | Description |
+|---|---|
+| `--lang <code>` | Language pack code to apply (e.g. `ptbr`). Triggers interactive selection if omitted. |
+| `--rom <path>` | Path to the source `.gbc` ROM. Prompted interactively if omitted. |
+| `--output <path>` | Output path for the patched ROM. Defaults to `the_machine_<code>.gbc` in the working directory. |
+| `--report <path>` | Optional path to write a JSON patch report. |
+| `--overwrite` | Allow overwriting an existing output file. Enabled automatically when using the default output name. |
+| `--list-langs` | Print all discovered language packs and exit. |
+
 ---
 
 ## Validating a Language Pack
 
-Structure-only (no ROM required):
+Structure-only validation (no ROM required):
 
 ```bash
 python3 scripts/validate_language_pack.py --pack langs/ptbr/pack.json
@@ -134,13 +185,26 @@ python3 scripts/validate_language_pack.py \
   --rom  /path/to/THEMACHINE.gbc
 ```
 
-The validator checks: required metadata fields, duplicate or malformed entries, preserved script tokens, line-count and line-length rules, supported characters for the current font patch, compressed byte budget per string, and source ROM identity.
+The validator checks all of the following before reporting a result:
+
+- Required metadata fields are present and well-formed
+- No duplicate or malformed entry IDs
+- All tokens listed in `tokens_to_preserve` are present in the translation
+- Line count and per-line length constraints are satisfied
+- Every character in the translation is supported by the current font patch
+- Compressed byte budget is respected for every string
+- Source ROM identity (SHA-256, size, internal title) matches the pack declaration
+
+> [!TIP]
+> Run structure-only validation during translation work, and reserve full ROM validation for a final pre-release check.
 
 ---
 
 ## Creating a New Language Pack
 
-Each pack lives in `langs/<code>/pack.json`. Minimal required shape:
+Each pack lives in its own subdirectory under `langs/` and must contain a `pack.json`.
+
+### Pack schema
 
 ```json
 {
@@ -168,19 +232,32 @@ Each pack lives in `langs/<code>/pack.json`. Minimal required shape:
 }
 ```
 
-> **Notes**
-> - `translation` must encode display breaks as literal `\\n`.
-> - Every token in `tokens_to_preserve` must remain present in the translated string.
-> - The pack must target the exact ROM identified by the SHA-256 above, unless intentionally targeting another revision.
-> - To support additional glyphs beyond ASCII + common Latin-1, extend `scripts/rom_text_codec.py`.
+| Field | Description |
+|---|---|
+| `pack_version` | Must be `1`. |
+| `language.code` | Short identifier used as the `--lang` argument and output filename suffix. |
+| `rom.sha256` | SHA-256 of the exact ROM revision this pack targets. |
+| `rom.size` | Expected ROM size in bytes. |
+| `entries[].absolute_offset` | Byte offset in the ROM where this string begins. |
+| `entries[].length` | Maximum byte length of the compressed string in ROM. |
+| `entries[].line_count` | Number of display lines the textbox allows. |
+| `entries[].max_line_length` | Maximum tile-width of a single line. |
+| `entries[].tokens_to_preserve` | Script tokens that must remain verbatim in the translation. |
+| `entries[].translation` | Translated string. Use literal `\\n` for line breaks. |
+
+> [!WARNING]
+> The pack must reference the exact ROM SHA-256 above unless intentionally targeting a different revision. Packs targeting unknown revisions will fail ROM identity validation.
+
+> [!NOTE]
+> The current codec supports ASCII plus common Latin-1 accented characters. If your language requires additional glyphs, extend `scripts/rom_text_codec.py` with the necessary tile mappings before running validation.
 
 ---
 
 ## Optional Emulator QA
 
-These tools are intended for maintainers preparing or reviewing packs. They require the optional dependencies.
+These tools automate visual inspection of the patched ROM using PyBoy. They require the optional dependencies from `requirements-qa.txt`.
 
-**Boot smoke test:**
+**Boot smoke test** — launches the ROM and verifies it reaches a playable state:
 
 ```bash
 python3 scripts/pyboy_smoke_test.py \
@@ -189,7 +266,7 @@ python3 scripts/pyboy_smoke_test.py \
   --boot-defaults
 ```
 
-**Textbox boundary QA:**
+**Textbox boundary QA** — loads a save state and checks that translated strings fit within their dialogue boxes:
 
 ```bash
 python3 scripts/qa_textboxes.py \
@@ -199,14 +276,16 @@ python3 scripts/qa_textboxes.py \
   --report      build/textbox_qa/report.json
 ```
 
+The textbox QA tool writes screenshots and a JSON report for every checked string, making it straightforward to spot overflow without playing through the game manually.
+
 ---
 
 ## Brazilian Portuguese Pack
 
-The repository ships with `langs/ptbr/pack.json` — the finalised PT-BR pack used to produce the official Brazilian Portuguese build.
+The repository ships with `langs/ptbr/pack.json`, the finalised PT-BR pack used to produce the official Brazilian Portuguese build.
 
 ---
 
 ## Legal
 
-This repository distributes tooling and language-pack data only. You must provide your own legally obtained copy of the original game ROM. The SHA-256 in the pack metadata is used solely to verify that the correct base ROM is being patched.
+This repository distributes tooling and language-pack data only. You must provide your own legally obtained copy of the original game ROM. The SHA-256 in the pack metadata is used solely for ROM identity verification and is not used to distribute or reproduce the game in any form.
