@@ -1390,7 +1390,7 @@
       "max_line_length": 15,
       "tokens_to_preserve": [],
       "source_text": "Sorry about the\\ntoenails in the\\nsink.",
-      "translation": "Mal pelas unhas\\ndo pé na\\npia."
+      "translation": "Foi mal pelas\\nunhas do pé na\\npia."
     },
     {
       "id": "STR_00127",
@@ -6576,7 +6576,7 @@
       "max_line_length": 17,
       "tokens_to_preserve": [],
       "source_text": "make a real\\nofficer outta ya.",
-      "translation": "fazer de você\\num oficial real."
+      "translation": "te tornar um\\npolicial mesmo."
     },
     {
       "id": "STR_00597",
@@ -6598,7 +6598,7 @@
       "max_line_length": 18,
       "tokens_to_preserve": [],
       "source_text": "UNCLE BOP: I'm\\nproud of ya, Girt.",
-      "translation": "TIO BOP: Tenho\\norgulho, Girt."
+      "translation": "TIO BOP: Que\\norgulho, Girt."
     },
     {
       "id": "STR_00599",
@@ -7368,7 +7368,7 @@
       "max_line_length": 16,
       "tokens_to_preserve": [],
       "source_text": "We are WARRIORS,\\nnot JUNKIES!",
-      "translation": "Somos GUERREI-\\nROS, não NOIA!"
+      "translation": "Somos GUERREI-\\nROS não NOIAS!"
     },
     {
       "id": "STR_00670",
@@ -24318,7 +24318,7 @@
       "max_line_length": 16,
       "tokens_to_preserve": [],
       "source_text": "ready for yer\\nfirst day at the",
-      "translation": "pronto pro seu\\nprimeiro dia na"
+      "translation": "pronto pro seu\\nprimeiro dia"
     },
     {
       "id": "STR_02209",
@@ -24329,7 +24329,7 @@
       "max_line_length": 15,
       "tokens_to_preserve": [],
       "source_text": "police academy?",
-      "translation": "Acad. Policial?"
+      "translation": "na academia?"
     },
     {
       "id": "STR_02210",
@@ -34736,10 +34736,10 @@
       "line_count": 1,
       "max_line_length": 16,
       "tokens_to_preserve": [
-        "#Save your game?"
+        "#Salvar o jogo?"
       ],
       "source_text": "#Save your game?",
-      "translation": "#Save your game?"
+      "translation": "#Salvar o jogo?"
     },
     {
       "id": "STR_03150",
@@ -45888,10 +45888,10 @@
       "line_count": 2,
       "max_line_length": 14,
       "tokens_to_preserve": [
-        "#D-PAD moves\\n         gun"
+        "#D-PAD move\\n   a arma"
       ],
       "source_text": "  #D-PAD moves\\n         gun",
-      "translation": "#D-PAD moves\\n         gun"
+      "translation": "#D-PAD move\\n   a arma"
     },
     {
       "id": "STR_04162",
@@ -45923,10 +45923,10 @@
       "line_count": 2,
       "max_line_length": 14,
       "tokens_to_preserve": [
-        "# READY? #"
+        "# PRONTO? #"
       ],
       "source_text": "    # READY? #\\n",
-      "translation": "# READY? #  \\n"
+      "translation": "# PRONTO? #\\n"
     },
     {
       "id": "STR_04165",
@@ -45963,7 +45963,7 @@
       "max_line_length": 15,
       "tokens_to_preserve": [],
       "source_text": "I never thought\\nyou'd do it.",
-      "translation": "Nunca pensei\\nque você ia."
+      "translation": "Nunca pensei\\nque faria isso."
     },
     {
       "id": "STR_04168",
@@ -83905,7 +83905,18 @@
       "max_line_length": 7,
       "tokens_to_preserve": [],
       "source_text": "Sleep\\nStay Up",
-      "translation": "Dormir\\nFicar"
+      "translation": "Dormir\\nAcordar"
+    },
+    {
+      "id": "STR_07611_TV_MENU",
+      "kind": "choice_or_prompt",
+      "absolute_offset": 770236,
+      "length": 29,
+      "line_count": 5,
+      "max_line_length": 6,
+      "tokens_to_preserve": [],
+      "source_text": "News\\nTitle\\nSave\\nOption\\n< Exit",
+      "translation": "Not.\\nTítulo\\nSalvar\\nOpção\\nSair"
     },
     {
       "id": "STR_07612",
@@ -85398,7 +85409,7 @@
       "max_line_length": 10,
       "tokens_to_preserve": [],
       "source_text": "Save\\nDon't Save",
-      "translation": "Salvar\\nN Save."
+      "translation": "Salvar\\nNão salvar"
     },
     {
       "id": "STR_07745",
